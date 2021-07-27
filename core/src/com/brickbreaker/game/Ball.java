@@ -15,7 +15,9 @@ public class Ball {
 	int xSpeed;
 	int ySpeed;
 	boolean isFallen;
+	boolean playing;
 	Color color = Color.WHITE;
+	int position;
 	
 	
 	public Ball(int x, int y, int size, int xSpeed, int ySpeed) {
@@ -25,6 +27,8 @@ public class Ball {
 		this.xSpeed = xSpeed;
 		this.ySpeed = ySpeed;
 		this.isFallen = false;
+		this.playing = false;
+		this.position = 0;
 	}
 	
 	public void update() {
@@ -36,7 +40,7 @@ public class Ball {
 		if (y > Gdx.graphics.getHeight() - 64) {
 			ySpeed = -ySpeed;
 		}
-		if (y < size) {
+		if (y < 0) {
 			x = Gdx.graphics.getWidth() / 2;
 			y = Gdx.graphics.getHeight() / 3;
 			xSpeed = 0;
@@ -58,6 +62,7 @@ public class Ball {
 				}
 				ySpeed = -5;
 				isFallen = false;
+				playing = true;
 			}
 		}
 	}  
@@ -77,14 +82,17 @@ public class Ball {
 	}
 	
 	private boolean collidesWith(GameElement element) {
+		// left = 1, top = 2, right = 3, bottom = 4
 		double checkX = this.x;
 		double checkY = this.y;
 		
 		if ((element.x + element.width) < this.x) {
 			checkX = element.x + element.width;
+			position += 1;
 		}
 		else if ((element.x > this.x)) {
 			checkX = element.x;
+			position += 3;
 		}
 		
 		if ((element.y + element.height) < this.y) {
@@ -111,5 +119,9 @@ public class Ball {
 	
 	public void setUnfallen() {
 		this.isFallen = false;
+	}
+	
+	public void setNotPlaying() {
+		this.playing = false;
 	}
 }

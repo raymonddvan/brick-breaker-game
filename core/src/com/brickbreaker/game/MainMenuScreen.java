@@ -32,7 +32,6 @@ public class MainMenuScreen implements Screen {
 		this.game.titleFont.draw(game.batch, "Brick Breaker!", 200, 450);
 		this.game.subFont.draw(game.batch, "Press anywhere to start", 250, 380);
 		if (Gdx.input.isTouched()) {
-			
 			game.setScreen(new GameScreen(game));
 			dispose();
 		}

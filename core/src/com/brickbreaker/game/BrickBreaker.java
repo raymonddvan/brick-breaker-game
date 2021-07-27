@@ -32,7 +32,6 @@ public class BrickBreaker extends Game {
 		subFont = new BitmapFont(Gdx.files.internal("sub_title.fnt"));
 		menuFont = new BitmapFont(Gdx.files.internal("mid_title.fnt"));
 		
-		
 		shape = new ShapeRenderer();
 		
 		this.setScreen(new MainMenuScreen(this));

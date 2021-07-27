@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class GameOverScreen implements Screen {
 	final BrickBreaker game;
-	final GameScreen screen;
+	final GameScreen playScreen;
 	
 	
-	public GameOverScreen(final BrickBreaker game, final GameScreen screen) {
+	public GameOverScreen(final BrickBreaker game, final GameScreen playScreen) {
 		this.game = game;
-		this.screen = screen;
+		this.playScreen = playScreen;
 	}
 	
 	
@@ -29,22 +29,22 @@ public class GameOverScreen implements Screen {
 		// TODO Auto-generated method stub
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		game.batch.begin();
-		game.batch.draw(screen.heartImage, screen.heart.x, screen.heart.y);
-		game.subFont.draw(game.batch, ": " + screen.lives, 60, 615);
-		game.subFont.draw(game.batch, "Points: " + screen.points, 600, 615);
+		game.batch.draw(playScreen.heartImage, playScreen.heart.x, playScreen.heart.y);
+		game.subFont.draw(game.batch, ": " + playScreen.lives, 60, 615);
+		game.subFont.draw(game.batch, "Points: " + playScreen.points, 600, 615);
 		game.shape.begin(ShapeRenderer.ShapeType.Filled);
-		for (Brick brick : screen.bricks) {
-			brick.draw(game.shape);
+		for (Brick brick : playScreen.bricks) {
+			game.batch.draw(brick.texture, brick.x, brick.y, brick.width, brick.height);
 		}
-		screen.paddle.draw(game.shape);
+		game.batch.draw(playScreen.paddleImage, playScreen.paddle.x, playScreen.paddle.y, playScreen.paddle.width, playScreen.paddle.height);
 		game.menuFont.draw(game.batch, "Game Over!", 300, 250);
 		game.subFont.draw(game.batch, "(touch/press anywhere to restart)", 160, 200);
 		if (Gdx.input.isTouched()) {
-			this.screen.resetLives();
-			this.screen.resetPoints();
-			this.screen.bricks.clear();
-			this.screen.addBricks(screen.brickWidth, screen.brickHeight);
-			this.game.setScreen(screen);
+			this.playScreen.resetLives();
+			this.playScreen.resetPoints();
+			this.playScreen.bricks.clear();
+			this.playScreen.addBricks(playScreen.brickWidth, playScreen.brickHeight);
+			this.game.setScreen(playScreen);
 		}
 		game.batch.end();
 		game.shape.end();
