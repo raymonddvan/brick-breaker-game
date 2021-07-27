@@ -43,7 +43,7 @@ public class Ball {
 			ySpeed = 0;
 			isFallen = true;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isTouched()) {
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 			if (xSpeed == 0) {
 				switch (MathUtils.random(2)) {
 					case 0:
