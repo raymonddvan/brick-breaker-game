@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,7 +33,7 @@ public class GameScreen implements Screen {
 	
 	public GameScreen(final BrickBreaker game) {
 		this.game = game;
-		this.lives = 1;
+		this.lives = 3;
 		this.points = 0;
 		this.ball = new Ball(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 3, 10, 0, 0);
 		this.paddle = new Paddle(50, 25, 100, 20);
@@ -66,8 +67,7 @@ public class GameScreen implements Screen {
 		game.batch.draw(heartImage, heart.x, heart.y);
 		game.subFont.draw(game.batch, ": " + lives, 60, 615);
 		game.subFont.draw(game.batch, "Points: " + points, 600, 615);
-//		game.batch.draw(ballImage, ball.x, ball.y, 15, 15);
-		game.batch.draw(paddleImage, paddle.x, paddle.y, paddle.width, paddle.height);
+//		game.batch.draw(paddleImage, paddle.x, paddle.y, paddle.width, paddle.height);
 		
 		if (ball.playing == false) {
 			game.menuFont.draw(game.batch, "Press space to start", 200, 275);
@@ -86,13 +86,78 @@ public class GameScreen implements Screen {
 			ball.setNotPlaying();
 			ball.setUnfallen();
 		}
+		
 		displayBricks(bricks);
+		if (addBrickLogic()) {
+			ball.reverseYSpeed();
+		}
 		game.batch.end();
 		paddle.update();
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean mouseMoved (int x, int y) {
+				paddle.x = x - paddle.width / 2;
+				return true;
+			}
+		});
 		ball.checkCollision(paddle);
 		game.shape.begin(ShapeRenderer.ShapeType.Filled);
 		ball.draw(game.shape);
+		paddle.draw(game.shape);
 		game.shape.end();
+	}
+	
+	public void addBricks(int brickWidth, int brickHeight) {
+		int i = 1;
+		for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight() - 50; y+= brickHeight + 10) {
+			i+=2;
+			for (int x = 0; x < Gdx.graphics.getWidth(); x+= brickWidth + 10) {
+				bricks.add(new Brick(x, y, brickWidth, brickHeight, new Texture(Gdx.files.internal( i + "-Breakout-Tiles.png"))));
+			}
+		}
+	}
+	
+	private void displayBricks(ArrayList<Brick> bricks) {
+		for (Brick brick : bricks) {
+			this.game.batch.draw(brick.texture, brick.x, brick.y, brickWidth, brickHeight);
+			ball.checkCollision(brick);
+		}
+	}
+	
+	private boolean addBrickLogic() {
+		int destroyed = 0;
+		if (bricks.isEmpty()) {
+			addBricks(brickWidth, brickHeight);
+			this.ball.setNotPlaying();
+			this.ball.resetBall();
+			resetLives();
+		}
+		//check for destroyed bricks to remove from game screen
+		for (int i = 0; i < bricks.size(); i++) {
+			Brick brick = bricks.get(i);
+			if (brick.destroyed) {
+				bricks.remove(brick);
+				points += 100;
+				destroyed++;
+				i--;
+			}
+		}
+		
+		//return boolean to detect if multiple collisions happens at once
+		if (destroyed == 2) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public void resetLives() {
+		this.lives = 3;
+	}
+	
+	public void resetPoints() {
+		this.points = 0;
 	}
 
 	@Override
@@ -122,40 +187,5 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 	}
-	
-	public void addBricks(int brickWidth, int brickHeight) {
-		int i = 1;
-		for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight() - 50; y+= brickHeight + 10) {
-			i+=2;
-			for (int x = 0; x < Gdx.graphics.getWidth(); x+= brickWidth + 10) {
-				bricks.add(new Brick(x, y, brickWidth, brickHeight, new Texture(Gdx.files.internal( i + "-Breakout-Tiles.png"))));
-			}
-		}
-	}
-	
-	private void displayBricks(ArrayList<Brick> bricks) {
-		for (Brick brick : bricks) {
-			this.game.batch.draw(brick.texture, brick.x, brick.y, brickWidth, brickHeight);
-			ball.checkCollision(brick);
-		}
-		
-		for (int i = 0; i < bricks.size(); i++) {
-			Brick brick = bricks.get(i);
-			if (brick.destroyed) {
-				bricks.remove(brick);
-				points += 100;
-				i--;
-			}
-		}
-	}
-	
-	public void resetLives() {
-		this.lives = 3;
-	}
-	
-	public void resetPoints() {
-		this.points = 0;
-	}
-	
 
 }

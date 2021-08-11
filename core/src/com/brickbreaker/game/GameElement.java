@@ -18,4 +18,8 @@ public class GameElement {
 	public void draw(ShapeRenderer shape) {
 		shape.rect(x, y, width, height);
 	}
+	
+	public int getX() {
+		return this.x;
+	}
 }

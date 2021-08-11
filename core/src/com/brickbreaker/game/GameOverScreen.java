@@ -29,16 +29,20 @@ public class GameOverScreen implements Screen {
 		// TODO Auto-generated method stub
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		game.batch.begin();
+		game.shape.begin(ShapeRenderer.ShapeType.Filled);
+		
 		game.batch.draw(playScreen.heartImage, playScreen.heart.x, playScreen.heart.y);
 		game.subFont.draw(game.batch, ": " + playScreen.lives, 60, 615);
 		game.subFont.draw(game.batch, "Points: " + playScreen.points, 600, 615);
-		game.shape.begin(ShapeRenderer.ShapeType.Filled);
+		
 		for (Brick brick : playScreen.bricks) {
 			game.batch.draw(brick.texture, brick.x, brick.y, brick.width, brick.height);
 		}
-		game.batch.draw(playScreen.paddleImage, playScreen.paddle.x, playScreen.paddle.y, playScreen.paddle.width, playScreen.paddle.height);
+//		game.batch.draw(playScreen.paddleImage, 350, playScreen.paddle.y, playScreen.paddle.width, playScreen.paddle.height);
+		this.playScreen.paddle.draw(game.shape);
 		game.menuFont.draw(game.batch, "Game Over!", 300, 250);
 		game.subFont.draw(game.batch, "(touch/press anywhere to restart)", 160, 200);
+		
 		if (Gdx.input.isTouched()) {
 			this.playScreen.resetLives();
 			this.playScreen.resetPoints();
